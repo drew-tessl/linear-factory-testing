@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": ["pr_opened", "no_change_needed", "needs_clarification"],
+      "description": "pr_opened when the change is delivered as a PR against the base branch — a newly created PR, or the canonical PR that already existed for this branch when your commits were pushed to it; no_change_needed when the codebase already satisfies the issue; needs_clarification when the issue is too ambiguous to proceed."
+    },
+    "pr_url": {
+      "type": "string",
+      "description": "URL of the opened pull request. Present when outcome is pr_opened."
+    },
+    "pr_number": {
+      "type": "integer",
+      "description": "Number of the opened pull request, when the SCM exposes one. Optional even when outcome is pr_opened (pr_url is the stable identifier)."
+    },
+    "branch": {
+      "type": "string",
+      "description": "The branch the PR was opened from. Present when outcome is pr_opened."
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"},
+      "description": "The blocking questions a human must answer. Present and non-empty when outcome is needs_clarification."
+    }
+  },
+  "required": ["outcome"],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {"properties": {"outcome": {"const": "pr_opened"}}},
+      "then": {
+        "required": ["pr_url", "branch"],
+        "not": {"required": ["questions"]}
+      }
+    },
+    {
+      "if": {"properties": {"outcome": {"const": "no_change_needed"}}},
+      "then": {
+        "not": {
+          "anyOf": [
+            {"required": ["pr_url"]},
+            {"required": ["pr_number"]},
+            {"required": ["branch"]},
+            {"required": ["questions"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {"properties": {"outcome": {"const": "needs_clarification"}}},
+      "then": {
+        "required": ["questions"],
+        "not": {
+          "anyOf": [
+            {"required": ["pr_url"]},
+            {"required": ["pr_number"]},
+            {"required": ["branch"]}
+          ]
+        }
+      }
+    }
+  ]
+}

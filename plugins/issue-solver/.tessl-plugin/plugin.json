@@ -1,0 +1,9 @@
+{
+  "name": "tessleng/kikimora-issue-solver",
+  "version": "0.1.0",
+  "description": "Standalone, installable skill that packages the kikimora issue-solver behaviour: read the repo, implement the change, run tests, commit, reconcile with the base branch, and open a PR -- driven entirely by launcher-supplied inputs, with no harness-injected Postgres/Linear/GitHub clients.",
+  "private": true,
+  "skills": [
+    "SKILL.md"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "instruction": "Activate the issue-solver skill before implementing a tracked-issue task and opening a PR",
+  "relevant_when": "Agent is launched to implement a change described by an issue (identifier, title, description, base branch, feature branch) and deliver it as a pull request",
+  "context": "The issue-solver skill contains the self-contained workflow the agent should follow: read AGENTS.md/CLAUDE.md first, implement within scope, run the project's tests, optionally run tessl verify (self-gated on tessl.json + TESSL_TOKEN), commit referencing the issue identifier, reconcile with the base branch (including the remote-truth check), and open or update a single PR with the conventional title and Closes line. Activating it up-front prevents the expensive failure mode of diving straight into edits without reading project conventions and then spending many turns on fixups, opening a duplicate PR, or skipping the base-branch reconcile.",
+  "checklist": [
+    {
+      "name": "skill-activated",
+      "rule": "Agent reads or activates the issue-solver skill (by reading SKILL.md, or by demonstrably following its documented workflow -- reading AGENTS.md/CLAUDE.md before the first edit, running the project's tests before committing, checking gh pr list --head before opening a PR, and reconciling with the base branch) before concluding the task",
+      "relevant_when": "Agent is implementing a tracked-issue task and opening a PR"
+    }
+  ]
+}

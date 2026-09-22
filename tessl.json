@@ -1,0 +1,33 @@
+{
+  "name": "drew-kiki/linear-factory-testing",
+  "mode": "managed",
+  "dependencies": {},
+  "agents": ["claude-code"],
+  "triggersDryRun": true,
+  "actions": {
+    "solve-linear-issue": {
+      "skill": "file:plugins/issue-solver",
+      "environment": "linear-factory-testing",
+      "agent": "claude-code",
+      "inputs": {
+        "ISSUE_IDENTIFIER": "{{ event.agentSession.issue.identifier }}",
+        "ISSUE_DESCRIPTION": "{{ event.agentSession.issue.description }}",
+        "BASE_BRANCH": "main",
+        "BRANCH_NAME": "linear/{{ event.agentSession.issue.identifier }}",
+        "GITHUB_REPO": "drew-tessl/linear-factory-testing",
+        "PROJECT_NAME": "linear-factory-testing"
+      }
+    }
+  },
+  "triggers": {
+    "linear-delegation": {
+      "on": ["linear:AgentSessionEvent.created"],
+      "concurrency": {
+        "keys": [
+          { "key": "{{ event.agentSession.issue.id }}", "limit": 1 }
+        ]
+      },
+      "action": "solve-linear-issue"
+    }
+  }
+}
